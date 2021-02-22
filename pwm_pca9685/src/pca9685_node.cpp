@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]) {
     ros::NodeHandle* nh = NULL;
     ros::NodeHandle* nh_priv = NULL;
-
+    int min_pwm, max_pwm, timeout, timeout_value, frequency = NULL;
     pwm_pca9685::PCA9685Activity* activity = NULL;
 
     ros::init(argc, argv, "pca9685_node");
@@ -32,7 +32,28 @@ int main(int argc, char *argv[]) {
         return -2;
     }
 
-    activity = new pwm_pca9685::PCA9685Activity(*nh, *nh_priv);
+
+    if (!nh->getParam("min_pwm", min_pwm)){
+        ROS_FATAL("Failed to load min_pwm param");
+    }
+
+    if (!nh->getParam("max_pwm", max_pwm)){
+        ROS_FATAL("Failed to load max_pwm param");
+    }
+
+    if (!nh->getParam("timeout", timeout)){
+        ROS_FATAL("Failed to load timeout param");
+    }
+
+    if (!nh->getParam("timeout_value", timeout_value)){
+        ROS_FATAL("Failed to load timeout_value param");
+    }
+
+    if (!nh->getParam("frequency", frequency)){
+        ROS_FATAL("Failed to load frequency param");
+    }
+
+    activity = new pwm_pca9685::PCA9685Activity(*nh, *nh_priv, min_pwm, max_pwm, timeout, timeout_value, frequency);
 
     if(!activity) {
         ROS_FATAL("Failed to initialize driver");

@@ -11,36 +11,40 @@ namespace pwm_pca9685 {
 
 // ******** constructors ******** //
 
-PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv) :
+PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, int min_pwm, int max_pwm, int timeout, int timeout_value, int frequency) :
   nh(_nh), nh_priv(_nh_priv) {
     ROS_INFO("initializing");
     nh_priv.param("device", param_device, (std::string)"/dev/i2c-1");
     nh_priv.param("address", param_address, (int)PCA9685_ADDRESS);
-    nh_priv.param("frequency", param_frequency, (int)1600);
+    nh_priv.param("frequency", param_frequency, frequency);
     nh_priv.param("frame_id", param_frame_id, (std::string)"imu");
     
+    int min_pwm_bin = calcPwm(min_pwm, frequency);
+    int max_pwm_bin = calcPwm(max_pwm, frequency);
+    int timeout_value_bin = calcPwm(timeout_value, frequency);
+
     // timeouts in milliseconds per channel
     nh_priv.param("timeout", param_timeout, std::vector<int>{
-        5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000,
-        5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000
+        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout,
+        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout
     });
 
     // minimum pwm value per channel
     nh_priv.param("pwm_min", param_pwm_min, std::vector<int>{
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0
+        min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin,
+        min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin, min_pwm_bin
     });
 
     // maximum pwm value per channel
     nh_priv.param("pwm_max", param_pwm_max, std::vector<int>{
-        65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-        65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535
+        max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin,
+        max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin, max_pwm_bin
     });
 
     // default pwm value per channel after timeout is reached
     nh_priv.param("timeout_value", param_timeout_value, std::vector<int>{
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0
+        timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin,
+        timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin, timeout_value_bin
     });
 
     if(param_timeout.size() != 16) {
@@ -84,6 +88,9 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
 }
 
 // ******** private methods ******** //
+int PCA9685Activity::calcPwm(int target_pwm, int frequency){
+    return target_pwm*65535*frequency*pow(10,-6);
+}
 
 bool PCA9685Activity::reset() {
     int i = 0;
