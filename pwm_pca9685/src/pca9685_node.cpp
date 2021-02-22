@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]) {
     ros::NodeHandle* nh = NULL;
     ros::NodeHandle* nh_priv = NULL;
-    int min_pwm, max_pwm, timeout, timeout_value, frequency = NULL;
+    int min_pwm, max_pwm, timeout, timeout_value, frequency = 0;
     pwm_pca9685::PCA9685Activity* activity = NULL;
 
     ros::init(argc, argv, "pca9685_node");
@@ -33,23 +33,23 @@ int main(int argc, char *argv[]) {
     }
 
 
-    if (!nh->getParam("min_pwm", min_pwm)){
+    if (!nh_priv->getParam("min_pwm", min_pwm)){
         ROS_FATAL("Failed to load min_pwm param");
     }
 
-    if (!nh->getParam("max_pwm", max_pwm)){
+    if (!nh_priv->getParam("max_pwm", max_pwm)){
         ROS_FATAL("Failed to load max_pwm param");
     }
 
-    if (!nh->getParam("timeout", timeout)){
+    if (!nh_priv->getParam("timeout", timeout)){
         ROS_FATAL("Failed to load timeout param");
     }
 
-    if (!nh->getParam("timeout_value", timeout_value)){
+    if (!nh_priv->getParam("timeout_value", timeout_value)){
         ROS_FATAL("Failed to load timeout_value param");
     }
 
-    if (!nh->getParam("frequency", frequency)){
+    if (!nh_priv->getParam("frequency", frequency)){
         ROS_FATAL("Failed to load frequency param");
     }
 
