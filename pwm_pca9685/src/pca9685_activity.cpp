@@ -22,10 +22,6 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
     int min_pwm_bin = (int)calcPwm(min_pwm);
     int max_pwm_bin = (int)calcPwm(max_pwm);
     int timeout_value_bin = (int)calcPwm(timeout_value);
-    int timeout_int = (int)timeout;
-    std::cout<<min_pwm_bin<<std::endl;
-    std::cout<<max_pwm_bin<<std::endl;
-    std::cout<<timeout_value_bin<<std::endl;
     // timeouts in milliseconds per channel
     nh_priv.param("timeout", param_timeout, std::vector<int>{
         timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int,
