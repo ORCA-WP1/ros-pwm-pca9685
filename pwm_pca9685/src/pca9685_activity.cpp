@@ -11,22 +11,25 @@ namespace pwm_pca9685 {
 
 // ******** constructors ******** //
 
-PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, int min_pwm, int max_pwm, int timeout, int timeout_value, int frequency) :
+PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, double timeout, double timeout_value, double frequency) :
   nh(_nh), nh_priv(_nh_priv) {
     ROS_INFO("initializing");
     nh_priv.param("device", param_device, (std::string)"/dev/i2c-1");
     nh_priv.param("address", param_address, (int)PCA9685_ADDRESS);
-    nh_priv.param("frequency", param_frequency, frequency);
+    nh_priv.param("frequency", param_frequency, (int)frequency);
     nh_priv.param("frame_id", param_frame_id, (std::string)"imu");
     
-    int min_pwm_bin = calcPwm(min_pwm, frequency);
-    int max_pwm_bin = calcPwm(max_pwm, frequency);
-    int timeout_value_bin = calcPwm(timeout_value, frequency);
-
+    int min_pwm_bin = (int)calcPwm(min_pwm, frequency);
+    int max_pwm_bin = (int)calcPwm(max_pwm, frequency);
+    int timeout_value_bin = (int)calcPwm(timeout_value, frequency);
+    int timeout_int = (int)timeout;
+    std::cout<<min_pwm_bin<<std::endl;
+    std::cout<<max_pwm_bin<<std::endl;
+    std::cout<<timeout_value_bin<<std::endl;
     // timeouts in milliseconds per channel
     nh_priv.param("timeout", param_timeout, std::vector<int>{
-        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout,
-        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout
+        timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int,
+        timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int
     });
 
     // minimum pwm value per channel
@@ -88,7 +91,7 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
 }
 
 // ******** private methods ******** //
-int PCA9685Activity::calcPwm(int target_pwm, int frequency){
+double PCA9685Activity::calcPwm(double target_pwm, double frequency){
     return target_pwm*65535*frequency*pow(10,-6);
 }
 

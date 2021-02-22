@@ -44,12 +44,12 @@ namespace pwm_pca9685 {
 
 class PCA9685Activity {
   public:
-    PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, int min_pwm, int max_pwm, int timeout, int timeout_value, int frequency);
+    PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, double timeout, double timeout_value, double frequency);
 
     bool start();
     bool stop();
     bool spinOnce();
-    int calcPwm(int target_pwm, int frequency);
+    double calcPwm(double target_pwm, double frequency);
 
     void onCommand(const std_msgs::Int32MultiArrayPtr& msg);
     bool set(uint8_t channel, uint16_t value);
