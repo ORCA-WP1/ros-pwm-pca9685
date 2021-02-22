@@ -1,0 +1,17 @@
+<launch>
+    <arg name="min_pwm" default="1100" />
+    <arg name="max_pwm" default="1900" />
+    <arg name="timeout" default="1000"/>
+    <arg name="timeout_value" default="1500"/>
+    <arg name="frequency" default="200"/>
+    <arg name="pwm_offset" default="0"/>
+
+    <node name="pca9685_node" pkg="pwm_pca9685" type="pca9685_node" output="screen">
+        <param name="min_pwm" value="$(arg min_pwm)" type="double"/>
+        <param name="max_pwm" value="$(arg max_pwm)" type="double"/>
+        <param name="timeout" value="$(arg timeout)" type="double"/>
+        <param name="timeout_value" value="$(arg timeout_value)" type="double"/>
+        <param name="frequency" value="$(arg frequency)" type="double"/>
+        <param name="pwm_offset" value="$(arg pwm_offset)" type="double"/>
+    </node>
+</launch>
