@@ -49,7 +49,7 @@ class PCA9685Activity {
     bool start();
     bool stop();
     bool spinOnce();
-    double calcPwm(double target_pwm, double frequency);
+    double calcPwm(double target_pwm);
 
     void onCommand(const std_msgs::Int32MultiArrayPtr& msg);
     bool set(uint8_t channel, uint16_t value);

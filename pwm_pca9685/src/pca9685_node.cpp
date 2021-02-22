@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]) {
     ros::NodeHandle* nh = NULL;
     ros::NodeHandle* nh_priv = NULL;
-    double min_pwm, max_pwm, timeout_value,timeout, frequency = 0;
+    double min_pwm, max_pwm, timeout_value,timeout, frequency, pwm_offset = 0;
     pwm_pca9685::PCA9685Activity* activity = NULL;
 
     ros::init(argc, argv, "pca9685_node");
@@ -53,6 +53,13 @@ int main(int argc, char *argv[]) {
         ROS_FATAL("Failed to load frequency param");
     }
 
+    if (!nh_priv->getParam("pwm_offset", pwm_offset)){
+        ROS_FATAL("Failed to load pwm_offset param");
+    }
+
+    min_pwm+=pwm_offset;
+    max_pwm+=pwm_offset;
+    timeout_value+=pwm_offset;
     activity = new pwm_pca9685::PCA9685Activity(*nh, *nh_priv, min_pwm, max_pwm, timeout, timeout_value, frequency);
 
     if(!activity) {

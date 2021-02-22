@@ -19,9 +19,9 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
     nh_priv.param("frequency", param_frequency, (int)frequency);
     nh_priv.param("frame_id", param_frame_id, (std::string)"imu");
     
-    int min_pwm_bin = (int)calcPwm(min_pwm, frequency);
-    int max_pwm_bin = (int)calcPwm(max_pwm, frequency);
-    int timeout_value_bin = (int)calcPwm(timeout_value, frequency);
+    int min_pwm_bin = (int)calcPwm(min_pwm);
+    int max_pwm_bin = (int)calcPwm(max_pwm);
+    int timeout_value_bin = (int)calcPwm(timeout_value);
     int timeout_int = (int)timeout;
     std::cout<<min_pwm_bin<<std::endl;
     std::cout<<max_pwm_bin<<std::endl;
@@ -91,8 +91,8 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
 }
 
 // ******** private methods ******** //
-double PCA9685Activity::calcPwm(double target_pwm, double frequency){
-    return target_pwm*65535*frequency*pow(10,-6);
+double PCA9685Activity::calcPwm(double target_pwm){
+    return target_pwm*65535*double(param_frequency)*pow(10,-6);
 }
 
 bool PCA9685Activity::reset() {
@@ -216,14 +216,15 @@ void PCA9685Activity::onCommand(const std_msgs::Int32MultiArrayPtr &msg) {
           last_change_times[channel] = t;
       }
 
-      if(msg->data[channel] == last_data[channel] && param_timeout[channel]) continue;
+    //   if(msg->data[channel] == last_data[channel] && param_timeout[channel]) continue;
 
       if(msg->data[channel] > param_pwm_max[channel]) {
 	  set(channel, param_pwm_max[channel]);
       } else if(msg->data[channel] < param_pwm_min[channel]) {
           set(channel, param_pwm_min[channel]);
       } else {
-          set(channel, msg->data[channel]);
+          double temp = (double)msg->data[channel];
+          set(channel, calcPwm(temp));
       }
       last_set_times[channel] = t;
       last_data[channel] = msg->data[channel];
