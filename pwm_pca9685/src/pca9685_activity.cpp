@@ -203,31 +203,30 @@ bool PCA9685Activity::stop() {
 void PCA9685Activity::onCommand(const std_msgs::Int32MultiArrayPtr &msg) {
     ros::Time time = ros::Time::now();
     uint64_t t = 1000 * (uint64_t)time.sec + (uint64_t)time.nsec / 1e6;
-
     if(msg->data.size() != 16) {
         ROS_ERROR("array is not have a size of 16");
         return;
     }
 
     for(int channel = 0; channel < 16; channel++) {
-      if(msg->data[channel] < 0) continue;
+      int pwm_msg = (int)calcPwm(double(msg->data[channel]));
+      if(pwm_msg < 0) continue;
 
-      if(msg->data[channel] != last_data[channel]) {
+      if(pwm_msg != last_data[channel]) {
           last_change_times[channel] = t;
       }
 
     //   if(msg->data[channel] == last_data[channel] && param_timeout[channel]) continue;
 
-      if(msg->data[channel] > param_pwm_max[channel]) {
+      if(pwm_msg > param_pwm_max[channel]) {
 	  set(channel, param_pwm_max[channel]);
-      } else if(msg->data[channel] < param_pwm_min[channel]) {
+      } else if(pwm_msg < param_pwm_min[channel]) {
           set(channel, param_pwm_min[channel]);
       } else {
-          double temp = (double)msg->data[channel];
-          set(channel, calcPwm(temp));
+          set(channel, pwm_msg);
       }
       last_set_times[channel] = t;
-      last_data[channel] = msg->data[channel];
+      last_data[channel] = pwm_msg;
     }
 }
 
