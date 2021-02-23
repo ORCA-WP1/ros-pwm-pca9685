@@ -3,7 +3,7 @@
     <arg name="max_pwm" default="1900" />
     <arg name="timeout" default="1000"/>
     <arg name="timeout_value" default="1500"/>
-    <arg name="frequency" default="200"/>
+    <arg name="frequency" default="100"/>
     <arg name="pwm_offset" default="0"/>
 
     <node name="pca9685_node" pkg="pwm_pca9685" type="pca9685_node" output="screen">
