@@ -12,7 +12,8 @@
 int main(int argc, char *argv[]) {
     ros::NodeHandle* nh = NULL;
     ros::NodeHandle* nh_priv = NULL;
-    double min_pwm, max_pwm, timeout_value,timeout, frequency, pwm_offset = 0;
+    double min_pwm, max_pwm, timeout_value, frequency, pwm_offset = 0;
+    int timeout = 0;
     pwm_pca9685::PCA9685Activity* activity = NULL;
 
     ros::init(argc, argv, "pca9685_node");

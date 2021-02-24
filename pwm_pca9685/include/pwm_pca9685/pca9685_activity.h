@@ -44,7 +44,7 @@ namespace pwm_pca9685 {
 
 class PCA9685Activity {
   public:
-    PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, double timeout, double timeout_value, double frequency);
+    PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, int timeout, double timeout_value, double frequency);
 
     bool start();
     bool stop();

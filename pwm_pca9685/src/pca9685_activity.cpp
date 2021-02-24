@@ -11,7 +11,7 @@ namespace pwm_pca9685 {
 
 // ******** constructors ******** //
 
-PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, double timeout, double timeout_value, double frequency) :
+PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv, double min_pwm, double max_pwm, int timeout, double timeout_value, double frequency) :
   nh(_nh), nh_priv(_nh_priv) {
     ROS_INFO("initializing");
     nh_priv.param("device", param_device, (std::string)"/dev/i2c-1");
@@ -24,8 +24,8 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
     int timeout_value_bin = (int)calcPwm(timeout_value);
     // timeouts in milliseconds per channel
     nh_priv.param("timeout", param_timeout, std::vector<int>{
-        timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int,
-        timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int, timeout_int
+        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout,
+        timeout, timeout, timeout, timeout, timeout, timeout, timeout, timeout
     });
 
     // minimum pwm value per channel
